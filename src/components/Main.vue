@@ -16,6 +16,20 @@
           {{movie.vote_average}} 
         </div>
       </li>
+      <li v-for="element in listSeriesSearch" :key="element.id">
+        <div>
+          {{element.name}} 
+        </div>
+        <div>
+          {{element.original_name}} 
+        </div>
+        <div>
+          {{element.original_language}} 
+        </div>
+        <div>
+          {{element.vote_average}} 
+        </div>
+      </li>
     </ul>
   </main>
 </template>
@@ -32,6 +46,7 @@ export default {
     return{
       movieList:'',
       listUserSearch:"",
+      listSeriesSearch:"",
       flagList:json
     }
   },
@@ -50,9 +65,17 @@ export default {
     getApiSearch(){
       if(this.userSearch!==""){
         axios
-        .get("https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=en-US&page=1&query=" + this.userSearch.trim())
+        .get("https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&page=1&query=" + this.userSearch.trim())
         .then(response =>{
           this.listUserSearch=response.data.results
+        })
+        .catch(error=>{
+          console.log(error)
+        })
+        axios
+        .get("https://api.themoviedb.org/3/search/tv?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&query=" + this.userSearch.trim())
+        .then(response =>{
+          this.listSeriesSearch=response.data.results
         })
         .catch(error=>{
           console.log(error)
@@ -63,6 +86,15 @@ export default {
       if(this.listUserSearch!==""){
         this.flagList.forEach((flag) => {
           this.listUserSearch.forEach((lang) =>{
+            if(flag.code.toLowerCase().includes(lang.original_language)){
+              lang.original_language=flag.emoji
+            }
+          })
+        })
+      }
+      if(this.listUserSearch!==""){
+        this.flagList.forEach((flag) => {
+          this.listSeriesSearch.forEach((lang) =>{
             if(flag.code.toLowerCase().includes(lang.original_language)){
               lang.original_language=flag.emoji
             }
