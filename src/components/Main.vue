@@ -7,6 +7,9 @@
           {{movie.title}} 
         </div>
         <div>
+          <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
+        </div>
+        <div>
           {{movie.original_title}} 
         </div>
         <div>
@@ -19,6 +22,9 @@
       <li v-for="element in listSeriesSearch" :key="element.id">
         <div>
           {{element.name}} 
+        </div>
+        <div>
+          <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
         </div>
         <div>
           {{element.original_name}} 
@@ -68,6 +74,7 @@ export default {
         .get("https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&page=1&query=" + this.userSearch.trim())
         .then(response =>{
           this.listUserSearch=response.data.results
+          console.log(this.listUserSearch);
         })
         .catch(error=>{
           console.log(error)
