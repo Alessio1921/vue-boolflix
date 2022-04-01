@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios'
+import json from '../../node_modules/emoji-flags/data.json'
 export default {
   name: 'indexMain',
   props: {
@@ -31,7 +32,7 @@ export default {
     return{
       movieList:'',
       listUserSearch:"",
-      // movieUser:''
+      flagList:json
     }
   },
   methods:{
@@ -45,6 +46,7 @@ export default {
         console.log(error)
       })
     },
+    // movies serarch by user
     getApiSearch(){
       if(this.userSearch!==""){
         axios
@@ -56,14 +58,28 @@ export default {
           console.log(error)
         })
       }
+    },
+    flag(){
+      if(this.listUserSearch!==""){
+        this.flagList.forEach((flag) => {
+          this.listUserSearch.forEach((lang) =>{
+            if(flag.code.toLowerCase().includes(lang.original_language)){
+              lang.original_language=flag.emoji
+            }
+          })
+        })
+      }
     }
   },
   created(){
     this.getApi()
   },
   computed:{
-    callFunction(){
+    callFunctionSearch(){
       return this.getApiSearch()
+    },
+    callFunctionFlag(){
+      return this.flag()
     }
   }
 }
