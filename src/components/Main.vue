@@ -16,7 +16,7 @@
           {{movie.original_language}} 
         </div>
         <div>
-          {{movie.vote_average}} 
+          {{Math.floor(movie.vote_average / 2)}} 
         </div>
       </li>
       <li v-for="element in listSeriesSearch" :key="element.id">
@@ -33,7 +33,7 @@
           {{element.original_language}} 
         </div>
         <div>
-          {{element.vote_average}} 
+          {{Math.floor(element.vote_average / 2)}} 
         </div>
       </li>
     </ul>
@@ -53,7 +53,8 @@ export default {
       movieList:'',
       listUserSearch:"",
       listSeriesSearch:"",
-      flagList:json
+      flagList:json,
+      prova:""
     }
   },
   methods:{
@@ -113,12 +114,10 @@ export default {
   created(){
     this.getApi()
   },
-  computed:{
-    callFunctionSearch(){
-      return this.getApiSearch()
-    },
-    callFunctionFlag(){
-      return this.flag()
+  watch:{
+    userSearch:function(){
+      this.getApiSearch()
+      this.flag()
     }
   }
 }
