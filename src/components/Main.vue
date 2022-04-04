@@ -21,6 +21,7 @@
               <li>
                 <span>Trama:</span>{{movie.overview}} 
               </li>
+              <li><span>Genere:</span> {{movie.genre_ids}}</li>
             </ul>
           </div>
         </div>
@@ -68,6 +69,8 @@ export default {
       listUserSearch:"",
       listSeriesSearch:"",
       flagList:json,
+      genreList:"",
+      genreTemp:""
     }
   },
   methods:{
@@ -122,14 +125,43 @@ export default {
           })
         })
       }
+    },
+    getApiGenre(){
+      axios
+      .get('https://api.themoviedb.org/3/genre/movie/list?api_key=d008d951e84fee160c9a8f2268d3e3a1&lang')
+      .then(response=>{
+        this.genreList=response.data.genres
+      })
+      .catch(error=>{console.log(error)}) 
+    },
+    genreConvert(){
+      // this.listUserSearch.forEach(element => {
+      //   this.genreTemp+=element.genre_ids
+      //   console.log(this.genreTemp);
+      // })
+
+      this.listUserSearch.forEach(element => {
+        this.genreList.forEach(genre => {
+          // console.log(element);
+          if(element.genre_ids.includes(genre.id)){
+            this.genreTemp+=genre.name+", "
+          }
+        });
+        element.genre_ids=this.genreTemp;
+        this.genreTemp="";
+      });
     }
   },
   created(){
     this.getApi()
+    this.getApiGenre()
   },
   computed:{
     callFunctionFlag(){
       return this.flag()
+    },
+    callGenreConvert(){
+      return this.genreConvert()
     }
   },
   watch:{
