@@ -1,42 +1,56 @@
 <template>
-  <main>
-    <ul>
-      <li>{{userSearch}}</li>
-      <li v-for="movie in listUserSearch" :key="movie.id">
-        <div>
-          {{movie.title}} 
+  <main class="bg-black">
+    <div class="container-fluid">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 ">
+        <div class="col my-2" v-for="movie in listUserSearch" :key="movie.id">
+          <div class="my-card position-relative">
+            <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
+            <ul class="position-absolute text-white">
+              <li>
+                <span>Titolo:</span>{{movie.title}} 
+              </li>
+              <li>
+                <span>Titolo Originale:</span>{{movie.original_title}} 
+              </li>
+              <li>
+                <span>Lingua Originale:</span>{{movie.original_language}} 
+              </li>
+              <li>
+                <span>Voto:</span> {{Math.round(movie.vote_average / 2)}} 
+              </li>
+              <li>
+                <span>Trama:</span>{{movie.overview}} 
+              </li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
+      </div>
+      <!-- series tv -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 ">
+        <div class="col my-2" v-for="element in listSeriesSearch" :key="element.id">
+          <div class="my-card position-relative">
+            <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
+            <ul class="position-absolute text-white">
+              <li>
+                <span>Titolo:</span>{{element.name}} 
+              </li>
+              <li>
+                <span>Titolo Originale:</span>{{element.name}} 
+              </li>
+              <li>
+                <span>Lingua Originale:</span>{{element.original_language}} 
+              </li>
+              <li>
+                <span>Voto:</span> {{Math.round(element.vote_average / 2)}} 
+              </li>
+              <li>
+                <span>Trama:</span>{{element.overview}} 
+              </li>
+            </ul>
+          </div>
         </div>
-        <div>
-          {{movie.original_title}} 
-        </div>
-        <div>
-          {{movie.original_language}} 
-        </div>
-        <div>
-          {{Math.round(movie.vote_average / 2)}} 
-        </div>
-      </li>
-      <li v-for="element in listSeriesSearch" :key="element.id">
-        <div>
-          {{element.name}} 
-        </div>
-        <div>
-          <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
-        </div>
-        <div>
-          {{element.original_name}} 
-        </div>
-        <div>
-          {{element.original_language}} 
-        </div>
-        <div>
-          {{Math.round(element.vote_average / 2)}} 
-        </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -124,4 +138,45 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+main{
+  height: 100vh;
+  overflow-y:auto ;
+}
+.container-fluid{
+  height: 100%;
+  .row{
+    .col{
+      .my-card{
+        height: 100%;
+        overflow-y: auto;
+        ul{
+          display: none;
+          list-style: none;
+          padding: 0.4rem;
+          li{
+            margin-bottom: 0.4rem;
+            font-size: .8rem;
+            span{
+              font-weight: bold;
+            }
+          }
+        }
+        &:hover{
+          background-color: black;
+          img{
+            display: none;
+          }
+          ul{
+            display: block;
+          }
+        }
+        img{
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
 </style>
