@@ -21,7 +21,9 @@
               <li>
                 <span>Trama:</span>{{movie.overview}} 
               </li>
-              <li><span>Genere:</span> {{movie.genre_ids}}</li>
+              <li>
+                <span>Genere:</span> {{movie.genre_ids}}
+              </li>
             </ul>
           </div>
         </div>
@@ -46,6 +48,9 @@
               </li>
               <li>
                 <span>Trama:</span>{{element.overview}} 
+              </li>
+              <li>
+                <span>Genere:</span> {{element.genre_ids}}
               </li>
             </ul>
           </div>
@@ -135,14 +140,18 @@ export default {
       .catch(error=>{console.log(error)}) 
     },
     genreConvert(){
-      // this.listUserSearch.forEach(element => {
-      //   this.genreTemp+=element.genre_ids
-      //   console.log(this.genreTemp);
-      // })
-
       this.listUserSearch.forEach(element => {
         this.genreList.forEach(genre => {
-          // console.log(element);
+          if(element.genre_ids.includes(genre.id)){
+            this.genreTemp+=genre.name+", "
+          }
+        });
+        element.genre_ids=this.genreTemp;
+        this.genreTemp="";
+      });
+      // series tv
+      this.listSeriesSearch.forEach(element => {
+        this.genreList.forEach(genre => {
           if(element.genre_ids.includes(genre.id)){
             this.genreTemp+=genre.name+", "
           }
