@@ -16,7 +16,7 @@
           {{movie.original_language}} 
         </div>
         <div>
-          {{Math.floor(movie.vote_average / 2)}} 
+          {{Math.round(movie.vote_average / 2)}} 
         </div>
       </li>
       <li v-for="element in listSeriesSearch" :key="element.id">
@@ -33,7 +33,7 @@
           {{element.original_language}} 
         </div>
         <div>
-          {{Math.floor(element.vote_average / 2)}} 
+          {{Math.round(element.vote_average / 2)}} 
         </div>
       </li>
     </ul>
