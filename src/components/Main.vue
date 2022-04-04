@@ -16,7 +16,7 @@
                 <span>Lingua Originale:</span>{{movie.original_language}} 
               </li>
               <li>
-                <span>Voto:</span> {{Math.round(movie.vote_average / 2)}} 
+                <span>Voto:</span> <i class="fas fa-star" v-for="(n,index) in Math.round(movie.vote_average / 2)" :key="index">{{n}}</i>
               </li>
               <li>
                 <span>Trama:</span>{{movie.overview}} 
@@ -41,7 +41,7 @@
                 <span>Lingua Originale:</span>{{element.original_language}} 
               </li>
               <li>
-                <span>Voto:</span> {{Math.round(element.vote_average / 2)}} 
+                <span>Voto:</span> <i class="fas fa-star" v-for="(n,index) in Math.round(element.vote_average / 2)" :key="index">{{n}}</i>
               </li>
               <li>
                 <span>Trama:</span>{{element.overview}} 
@@ -68,7 +68,6 @@ export default {
       listUserSearch:"",
       listSeriesSearch:"",
       flagList:json,
-      prova:""
     }
   },
   methods:{
@@ -128,10 +127,14 @@ export default {
   created(){
     this.getApi()
   },
+  computed:{
+    callFunctionFlag(){
+      return this.flag()
+    }
+  },
   watch:{
     userSearch:function(){
-      this.getApiSearch()
-      this.flag()
+      this.getApiSearch();
     }
   }
 }

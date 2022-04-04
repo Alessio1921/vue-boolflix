@@ -3,7 +3,7 @@
     <nav class="navbar navbar-dark p-0 bg-dark  navbar-expand-lg">
       <div class="container-fluid">
         <div class="nav-left d-flex">
-          <a class="navbar-brand m-0 p-0"><img src="../assets/img/Netflix-Logo.svg" alt=""></a>
+          <a class="navbar-brand m-0 p-0"><img src="../assets/img/Netflix-Logo.svg" alt="logo netflix"></a>
           <div class="" >
             <ul class="navbar-nav">
               <li class="nav-item">
@@ -29,7 +29,7 @@
         </div>
         <div class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="userSearch" @keyup.enter="$emit('search',userSearch)"> 
-          <button class="btn btn-outline-success" @click="$emit('search',userSearch)">Search</button>
+          <button class="btn btn-outline-danger rounded-circle " @click="$emit('search',userSearch)"><i class="fas fa-magnifying-glass"></i></button>
         </div>
       </div>
     </nav>

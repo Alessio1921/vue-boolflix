@@ -8,7 +8,7 @@
 <script>
 import Header from './components/Header.vue'
 import Main from './components/Main.vue'
-
+import '@fortawesome/fontawesome-free/js/all.js';
 export default {
   name: 'App',
   components: {
@@ -31,6 +31,7 @@ export default {
 
 <style lang="scss">
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
