@@ -1,7 +1,7 @@
 <template>
   <main class="bg-black">
     <div class="container-fluid">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 ">
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
         <div class="col my-2" v-for="movie in listUserSearch" :key="movie.id">
           <div class="my-card position-relative">
             <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
@@ -24,12 +24,16 @@
               <li>
                 <span>Genere:</span> {{movie.genre_ids}}
               </li>
+              <li>
+                <span>Attori:</span>
+                <div>{{movie.actorsList}}</div>
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <!-- series tv -->
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 ">
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
         <div class="col my-2" v-for="element in listSeriesSearch" :key="element.id">
           <div class="my-card position-relative">
             <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
@@ -51,6 +55,10 @@
               </li>
               <li>
                 <span>Genere:</span> {{element.genre_ids}}
+              </li>
+              <li>
+                <span>Attori:</span>
+                <div>{{element.actorsList}}</div>
               </li>
             </ul>
           </div>
@@ -75,10 +83,13 @@ export default {
       listSeriesSearch:"",
       flagList:json,
       genreList:"",
-      genreTemp:""
+      genreTemp:"",
+      castList:"",
+      actors:""
     }
   },
   methods:{
+    // start call axios 
     getApi(){
       axios
       .get('https://api.themoviedb.org/3/discover/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate')
@@ -89,14 +100,18 @@ export default {
         console.log(error)
       })
     },
-    // movies serarch by user
+    // movies and series search by user
     getApiSearch(){
       if(this.userSearch!==""){
         axios
         .get("https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&page=1&query=" + this.userSearch.trim())
         .then(response =>{
           this.listUserSearch=response.data.results
-          console.log(this.listUserSearch);
+          this.listUserSearch.forEach(element => {
+            element.actorsList="";
+            // I call api actor and pass him the single film
+            this.getApiActor(element);
+          });
         })
         .catch(error=>{
           console.log(error)
@@ -105,12 +120,39 @@ export default {
         .get("https://api.themoviedb.org/3/search/tv?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&query=" + this.userSearch.trim())
         .then(response =>{
           this.listSeriesSearch=response.data.results
+          this.listSeriesSearch.forEach(element => {
+            element.actorsList="";
+            // I call api actor and pass him the single film
+            this.getApiActor(element);
+          });
         })
         .catch(error=>{
           console.log(error)
         })
       }
     },
+    getApiGenre(){
+      axios
+      .get('https://api.themoviedb.org/3/genre/movie/list?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT')
+      .then(response=>{
+        this.genreList=response.data.genres
+      })
+      .catch(error=>{console.log(error)}) 
+    },
+    getApiActor(film){
+      axios
+      .get(`https://api.themoviedb.org/3/movie/${film.id}/credits?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT`)
+      .then(response=>{
+        this.actors="";
+        this.castList=response.data.cast;
+          for (let i = 0; i < 5; i++) {
+            this.actors+=this.castList[i].name+", "
+          }
+        film.actorsList= this.actors
+      })
+      .catch(error=>{console.log(error);})
+    },
+    // end call
     flag(){
       if(this.listUserSearch!==""){
         this.flagList.forEach((flag) => {
@@ -120,8 +162,6 @@ export default {
             }
           })
         })
-      }
-      if(this.listUserSearch!==""){
         this.flagList.forEach((flag) => {
           this.listSeriesSearch.forEach((lang) =>{
             if(flag.code.toLowerCase().includes(lang.original_language)){
@@ -131,35 +171,29 @@ export default {
         })
       }
     },
-    getApiGenre(){
-      axios
-      .get('https://api.themoviedb.org/3/genre/movie/list?api_key=d008d951e84fee160c9a8f2268d3e3a1&lang')
-      .then(response=>{
-        this.genreList=response.data.genres
-      })
-      .catch(error=>{console.log(error)}) 
-    },
     genreConvert(){
-      this.listUserSearch.forEach(element => {
-        this.genreList.forEach(genre => {
-          if(element.genre_ids.includes(genre.id)){
-            this.genreTemp+=genre.name+", "
-          }
+      if(this.listUserSearch!==""){
+        this.listUserSearch.forEach(element => {
+          this.genreList.forEach(genre => {
+            if(element.genre_ids.includes(genre.id)){
+              this.genreTemp+=genre.name+", "
+            }
+          });
+          element.genre_ids=this.genreTemp;
+          this.genreTemp="";
         });
-        element.genre_ids=this.genreTemp;
-        this.genreTemp="";
-      });
       // series tv
-      this.listSeriesSearch.forEach(element => {
-        this.genreList.forEach(genre => {
-          if(element.genre_ids.includes(genre.id)){
-            this.genreTemp+=genre.name+", "
-          }
+        this.listSeriesSearch.forEach(element => {
+          this.genreList.forEach(genre => {
+            if(element.genre_ids.includes(genre.id)){
+              this.genreTemp+=genre.name+", "
+            }
+          });
+          element.genre_ids=this.genreTemp;
+          this.genreTemp="";
         });
-        element.genre_ids=this.genreTemp;
-        this.genreTemp="";
-      });
-    }
+      }
+    },
   },
   created(){
     this.getApi()
@@ -176,6 +210,7 @@ export default {
   watch:{
     userSearch:function(){
       this.getApiSearch();
+      // this.addActors()
     }
   }
 }

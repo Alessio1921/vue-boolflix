@@ -9,19 +9,19 @@
               <li class="nav-item">
                 <a class="nav-link active"  href="#">Home</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-none d-lg-block">
                 <a class="nav-link" href="#">Serie Tv</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-none d-lg-block">
                 <a class="nav-link" href="#">Film</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-none d-lg-block">
                 <a class="nav-link" href="#">Originali</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-none d-lg-block">
                 <a class="nav-link" href="#">Aggiunti di recente</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-none d-lg-block">
                 <a class="nav-link" href="#">La mia lista</a>
               </li>
             </ul>
