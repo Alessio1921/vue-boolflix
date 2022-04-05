@@ -4,7 +4,7 @@
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
         <div class="col my-2" v-for="movie in listGenreFilterFilm" :key="movie.id" >
           <div class="my-card position-relative" >
-            <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
+            <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
             <ul class="position-absolute text-white">
               <li>
                 <span>Titolo:</span>{{movie.title}} 
@@ -36,7 +36,7 @@
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
         <div class="col my-2" v-for="element in listGenreFilterSeries" :key="element.id">
           <div class="my-card position-relative">
-            <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
+            <img :src="element.poster_path!==null ? `http://image.tmdb.org/t/p/w500${element.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${element.name} img`">
             <ul class="position-absolute text-white">
               <li>
                 <span>Titolo:</span>{{element.name}} 
@@ -258,10 +258,11 @@ main{
         &:hover{
           background-color: black;
           img{
-            display: none;
+            opacity: 0;
           }
           ul{
             display: block;
+            top: 0;
           }
         }
         img{
