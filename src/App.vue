@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header @search='dataRecovery' />
-    <Main :userSearch='userSearch'/>
+    <Header @search='dataRecovery' :genreList='genreList' @select="genreSelect"/>
+    <Main :userSearch='userSearch' @genres="genres" :selectedGenre="selectedGenre"/>
   </div>
 </template>
 
@@ -17,13 +17,22 @@ export default {
   },
   data:function(){
     return{
-      userSearch:""
+      userSearch:"",
+      genreList:[],
+      selectedGenre:""
     }
   },
   methods:{
     dataRecovery(userSearch){
       this.userSearch=userSearch
-      // console.log(this.userSearch);
+    },
+    genres(genreList){
+      this.genreList=genreList;
+      console.log(this.genreList);
+    },
+    genreSelect(selected){
+      this.selectedGenre=selected;
+      // console.log(this.selectedGenre);
     }
   }
 }
@@ -34,5 +43,6 @@ export default {
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  min-width: 580px;
 }
 </style>

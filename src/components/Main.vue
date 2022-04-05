@@ -2,8 +2,8 @@
   <main class="bg-black">
     <div class="container-fluid">
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
-        <div class="col my-2" v-for="movie in listUserSearch" :key="movie.id">
-          <div class="my-card position-relative">
+        <div class="col my-2" v-for="movie in listGenreFilterFilm" :key="movie.id" >
+          <div class="my-card position-relative" >
             <img :src="`http://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="`${movie.title} img`" v-if="movie.poster_path!==null">
             <ul class="position-absolute text-white">
               <li>
@@ -34,7 +34,7 @@
       </div>
       <!-- series tv -->
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
-        <div class="col my-2" v-for="element in listSeriesSearch" :key="element.id">
+        <div class="col my-2" v-for="element in listGenreFilterSeries" :key="element.id">
           <div class="my-card position-relative">
             <img :src="`http://image.tmdb.org/t/p/w500${element.poster_path}`" :alt="`${element.title} img`" v-if="element.poster_path!==null">
             <ul class="position-absolute text-white">
@@ -74,7 +74,8 @@ import json from '../../node_modules/emoji-flags/data.json'
 export default {
   name: 'indexMain',
   props: {
-    'userSearch':String
+    'userSearch':String,
+    'selectedGenre':String
   },
   data:function(){
     return{
@@ -135,7 +136,8 @@ export default {
       axios
       .get('https://api.themoviedb.org/3/genre/movie/list?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT')
       .then(response=>{
-        this.genreList=response.data.genres
+        this.genreList=response.data.genres;
+        this.$emit('genres',this.genreList);
       })
       .catch(error=>{console.log(error)}) 
     },
@@ -205,12 +207,25 @@ export default {
     },
     callGenreConvert(){
       return this.genreConvert()
-    }
+    },
+    // filter list film by genre
+    listGenreFilterFilm(){
+      if(this.selectedGenre==""){
+        return this.listUserSearch
+      }
+      return this.listUserSearch.filter(film => film.genre_ids.includes(this.selectedGenre))
+    },
+      // filter list series by genre
+    listGenreFilterSeries(){
+      if(this.selectedGenre==""){
+        return this.listSeriesSearch
+      }
+      return this.listSeriesSearch.filter(film => film.genre_ids.includes(this.selectedGenre))
+    },
   },
   watch:{
     userSearch:function(){
       this.getApiSearch();
-      // this.addActors()
     }
   }
 }
