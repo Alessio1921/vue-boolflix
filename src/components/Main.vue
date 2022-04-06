@@ -1,7 +1,7 @@
 <template>
   <main class="bg-black">
     <div class="container-fluid">
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''">
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''" id="top">
         <div class="col my-2" v-for="movie in listGenreFilterHomeFilm" :key="movie.id">
           <div class="my-card position-relative" >
             <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
@@ -30,6 +30,9 @@
               </li>
             </ul>
           </div>
+        </div>
+        <div class="offset-5 col-2 text-center">
+          <button class="btn btn-outline-danger p-2 px-5 my-5" @click="getApiHome(page++)">altro</button>
         </div>
       </div> 
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-else>
@@ -117,14 +120,15 @@ export default {
       genreList:"",
       genreTemp:"",
       castList:"",
-      actors:""
+      actors:"",
+      page:2
     }
   },
   methods:{
     // start call axios 
-    getApiHome(){
+    getApiHome(page){
       axios
-      .get('https://api.themoviedb.org/3/discover/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate')
+      .get(`https://api.themoviedb.org/3/discover/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_watch_monetization_types=flatrate`)
       .then(response =>{
         this.movieList=response.data.results
         this.movieList.forEach(element => {
@@ -248,11 +252,10 @@ export default {
         element.genre_ids=this.genreTemp;
         this.genreTemp="";
       });
-      
-    },
+    }
   },
   created(){
-    this.getApiHome();
+    this.getApiHome(1);
     this.getApiGenre();
   },
   beforeDestroy(){
@@ -307,6 +310,7 @@ main{
   overflow-y:auto ;
 }
 .container-fluid{
+  margin-top: 10vh;
   height: 100%;
   .row{
     .col{
