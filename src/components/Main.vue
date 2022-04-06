@@ -2,7 +2,7 @@
   <main class="bg-black">
     <div class="container-fluid">
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''">
-        <div class="col my-2" v-for="movie in movieList" :key="movie.id">
+        <div class="col my-2" v-for="movie in listGenreFilterHomeFilm" :key="movie.id">
           <div class="my-card position-relative" >
             <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
             <ul class="position-absolute text-white">
@@ -26,7 +26,7 @@
               </li>
               <li>
                 <span>Attori:</span>
-                <div>{{movie.actorsList}}</div>
+                <div>{{movie.popularity}}</div>
               </li>
             </ul>
           </div>
@@ -57,7 +57,7 @@
               </li>
               <li>
                 <span>Attori:</span>
-                <div>{{movie.actorsList}}</div>
+                <div>{{movie.popularity}}</div>
               </li>
             </ul>
           </div>
@@ -89,7 +89,7 @@
               </li>
               <li>
                 <span>Attori:</span>
-                <div>{{element.actorsList}}</div>
+                <div>{{element.popularity}}</div>
               </li>
             </ul>
           </div>
@@ -122,11 +122,15 @@ export default {
   },
   methods:{
     // start call axios 
-    getApi(){
+    getApiHome(){
       axios
       .get('https://api.themoviedb.org/3/discover/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate')
       .then(response =>{
         this.movieList=response.data.results
+        this.movieList.forEach(element => {
+          // I replace the popularity element by calling the function
+            element.popularity=this.getApiActor(element);
+          });
       })
       .catch(error=>{
         console.log(error)
@@ -140,9 +144,8 @@ export default {
         .then(response =>{
           this.listUserSearch=response.data.results
           this.listUserSearch.forEach(element => {
-            element.actorsList="";
-            // I call api actor and pass him the single film
-            this.getApiActor(element);
+          // I replace the popularity element by calling the function
+            element.popularity=this.getApiActor(element);
           });
         })
         .catch(error=>{
@@ -153,9 +156,8 @@ export default {
         .then(response =>{
           this.listSeriesSearch=response.data.results
           this.listSeriesSearch.forEach(element => {
-            element.actorsList="";
-            // I call api actor and pass him the single film
-            this.getApiActor(element);
+          // I replace the popularity element by calling the function
+            element.actorsList=this.getApiActor(element);
           });
         })
         .catch(error=>{
@@ -181,7 +183,8 @@ export default {
           for (let i = 0; i < 5; i++) {
             this.actors+=this.castList[i].name+", "
           }
-        film.actorsList= this.actors
+        film.popularity= this.actors;
+        console.log("attori");
       })
       .catch(error=>{console.log(error);})
     },
@@ -203,9 +206,16 @@ export default {
           })
         })
       }
+      this.flagList.forEach((flag) => {
+          this.movieList.forEach((lang) =>{
+            if(flag.code.toLowerCase().includes(lang.original_language)){
+              lang.original_language=flag.emoji
+            }
+          })
+        })
     },
     genreConvert(){
-      if(this.listUserSearch!==""){
+      if(this.listUserSearch!=""){
         this.listUserSearch.forEach(element => {
           this.genreList.forEach(genre => {
             if(element.genre_ids.includes(genre.id)){
@@ -215,7 +225,7 @@ export default {
           element.genre_ids=this.genreTemp;
           this.genreTemp="";
         });
-      // series tv
+        // series tv
         this.listSeriesSearch.forEach(element => {
           this.genreList.forEach(genre => {
             if(element.genre_ids.includes(genre.id)){
@@ -226,22 +236,36 @@ export default {
           this.genreTemp="";
         });
       }
+      this.movieList.forEach(element => {
+        this.genreList.forEach(genre => {
+          if(element.genre_ids.includes(genre.id)){
+            this.genreTemp+=genre.name+", "
+          }
+          else if(element.genre_ids.includes(genre.name)){
+            this.genreTemp=element.genre_ids
+          }
+        });
+        element.genre_ids=this.genreTemp;
+        this.genreTemp="";
+      });
+      
     },
   },
   created(){
-    this.getApi()
-    this.getApiGenre()
+    this.getApiHome();
+    this.getApiGenre();
+  },
+  beforeDestroy(){
+    this.genreConvert()
   },
   computed:{
-    callFunctionFlag(){
-      console.log("bandiere");
-      return this.flag()
-    },
-    // callGenreConvert(){
-    //   console.log("genere convert");
-    //   return this.genreConvert()
-    // },
     // filter list film by genre
+    listGenreFilterHomeFilm(){
+      if(this.selectedGenre==""){
+        return this.movieList
+      }
+      return this.movieList.filter(film => film.genre_ids.includes(this.selectedGenre))
+    },
     listGenreFilterFilm(){
       if(this.selectedGenre==""){
         return this.listUserSearch
@@ -258,12 +282,21 @@ export default {
   },
   watch:{
     userSearch:function(){
+      this.genreConvert();
       this.getApiSearch();
     },
     listUserSearch:function(){
       this.genreConvert()
+      },
+    listSeriesSearch:function(){
+      this.flag()
     },
-    
+    genreList:function(){
+      this.genreConvert()
+    },
+    movieList:function(){
+      this.flag()
+    }
   }
 }
 </script>
