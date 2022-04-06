@@ -1,7 +1,38 @@
 <template>
   <main class="bg-black">
     <div class="container-fluid">
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''">
+        <div class="col my-2" v-for="movie in movieList" :key="movie.id">
+          <div class="my-card position-relative" >
+            <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
+            <ul class="position-absolute text-white">
+              <li>
+                <span>Titolo:</span>{{movie.title}} 
+              </li>
+              <li>
+                <span>Titolo Originale:</span>{{movie.original_title}} 
+              </li>
+              <li>
+                <span>Lingua Originale:</span>{{movie.original_language}} 
+              </li>
+              <li>
+                <span>Voto:</span> <i class="fas fa-star" v-for="(n,index) in Math.round(movie.vote_average / 2)" :key="index">{{n}}</i>
+              </li>
+              <li>
+                <span>Trama:</span>{{movie.overview}} 
+              </li>
+              <li>
+                <span>Genere:</span> {{movie.genre_ids}}
+              </li>
+              <li>
+                <span>Attori:</span>
+                <div>{{movie.actorsList}}</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div> 
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-else>
         <div class="col my-2" v-for="movie in listGenreFilterFilm" :key="movie.id" >
           <div class="my-card position-relative" >
             <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
@@ -33,7 +64,7 @@
         </div>
       </div>
       <!-- series tv -->
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 ">
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch!==''">
         <div class="col my-2" v-for="element in listGenreFilterSeries" :key="element.id">
           <div class="my-card position-relative">
             <img :src="element.poster_path!==null ? `http://image.tmdb.org/t/p/w500${element.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${element.name} img`">
@@ -203,11 +234,13 @@ export default {
   },
   computed:{
     callFunctionFlag(){
+      console.log("bandiere");
       return this.flag()
     },
-    callGenreConvert(){
-      return this.genreConvert()
-    },
+    // callGenreConvert(){
+    //   console.log("genere convert");
+    //   return this.genreConvert()
+    // },
     // filter list film by genre
     listGenreFilterFilm(){
       if(this.selectedGenre==""){
@@ -226,7 +259,11 @@ export default {
   watch:{
     userSearch:function(){
       this.getApiSearch();
-    }
+    },
+    listUserSearch:function(){
+      this.genreConvert()
+    },
+    
   }
 }
 </script>
