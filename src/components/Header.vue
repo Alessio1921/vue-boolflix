@@ -67,6 +67,7 @@ header{
   position: fixed;
   z-index: 2;
   width: 100vw;
+  min-width: 580px;
 }
   nav{
     height: 10vh;

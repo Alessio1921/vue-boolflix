@@ -1,7 +1,8 @@
 <template>
   <main class="bg-black">
     <div class="container-fluid">
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''" id="top">
+      <h1 class="text-center text-white">Film</h1>
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch==''" >
         <div class="col my-2" v-for="movie in listGenreFilterHomeFilm" :key="movie.id">
           <div class="my-card position-relative" >
             <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
@@ -31,11 +32,13 @@
             </ul>
           </div>
         </div>
-        <div class="offset-5 col-2 text-center">
-          <button class="btn btn-outline-danger p-2 px-5 my-5" @click="getApiHome(page++)">altro</button>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="text-center">
+            <button class="btn btn-outline-danger py-2 px-5 my-5 mx-auto" @click="getApiHome(page++)">altro</button>
+          </div>
         </div>
       </div> 
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-else>
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch!=''">
         <div class="col my-2" v-for="movie in listGenreFilterFilm" :key="movie.id" >
           <div class="my-card position-relative" >
             <img :src="movie.poster_path!==null ? `http://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://www.publicdomainpictures.net/pictures/280000/nahled/not-found-image-15383864787lu.jpg'" :alt="`${movie.title} img`" >
@@ -65,8 +68,14 @@
             </ul>
           </div>
         </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="text-center">
+            <button class="btn btn-outline-danger py-2 px-5 my-5 mx-auto" @click="getApiSearch(page++)">altro</button>
+          </div>
+        </div>
       </div>
       <!-- series tv -->
+      <h1 class="text-center text-white" v-if="userSearch!=''">Serie Tv</h1>
       <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 " v-if="userSearch!==''">
         <div class="col my-2" v-for="element in listGenreFilterSeries" :key="element.id">
           <div class="my-card position-relative">
@@ -141,10 +150,10 @@ export default {
       })
     },
     // movies and series search by user
-    getApiSearch(){
+    getApiSearch(page){
       if(this.userSearch!==""){
         axios
-        .get("https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&page=1&query=" + this.userSearch.trim())
+        .get(`https://api.themoviedb.org/3/search/movie?api_key=d008d951e84fee160c9a8f2268d3e3a1&language=it-IT&page=${page}&query=` + this.userSearch.trim())
         .then(response =>{
           this.listUserSearch=response.data.results
           this.listUserSearch.forEach(element => {
@@ -286,7 +295,7 @@ export default {
   watch:{
     userSearch:function(){
       this.genreConvert();
-      this.getApiSearch();
+      this.getApiSearch(1);
     },
     listUserSearch:function(){
       this.genreConvert()
