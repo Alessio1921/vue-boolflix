@@ -34,7 +34,8 @@
         </div>
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
           <div class="text-center">
-            <button class="btn btn-outline-danger py-2 px-5 my-5 mx-auto" @click="getApiHome(page++)">altro</button>
+            <button class="btn btn-outline-danger py-2 px-5 my-5 mx-2" @click="getApiHome(page++)">avanti</button>
+            <button class="btn btn-outline-danger py-2 px-5 my-5" @click="getApiHome(page--)">indietro</button>
           </div>
         </div>
       </div> 
@@ -264,7 +265,7 @@ export default {
     }
   },
   created(){
-    this.getApiHome(1);
+    this.getApiHome(this.page);
     this.getApiGenre();
   },
   beforeDestroy(){
